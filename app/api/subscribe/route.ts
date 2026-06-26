@@ -18,6 +18,9 @@ export async function POST(req: NextRequest) {
   const { error } = await supabase
     .from('email_subscribers')
     .upsert({ email, product_name }, { onConflict: 'email', ignoreDuplicates: true })
-  if (error) return NextResponse.json({ success: false, error: error.message }, { status: 500 })
+  if (error) {
+    console.error('[subscribe] Supabase error:', error.message, error.code, error.details)
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
+  }
   return NextResponse.json({ success: true })
 }
