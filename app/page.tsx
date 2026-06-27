@@ -275,7 +275,10 @@ export default async function LandingPage() {
         color: '#333',
         fontSize: '0.75rem'
       }}>
-        Links support Vigil via affiliate commission at no cost to you. · vigildrop.com
+        Links support Vigil via affiliate commission at no cost to you. &nbsp;·&nbsp;{' '}
+        <a href="/privacy" style={{ color: '#555', textDecoration: 'none' }}>Privacy Policy</a>
+        {' · '}
+        <a href="/terms-of-service" style={{ color: '#555', textDecoration: 'none' }}>Terms of Service</a>
       </footer>
 
     </main>
