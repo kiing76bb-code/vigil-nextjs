@@ -8,6 +8,7 @@ export type Product = {
   url: string
   last_updated: string
   image_url?: string
+  description?: string
 }
 
 export function slugify(name: string) {
@@ -17,7 +18,7 @@ export function slugify(name: string) {
 export async function getAllProducts(): Promise<Product[]> {
   const { data, error } = await supabase
     .from('products')
-    .select('id, name, current_price, target_price, url, last_updated, image_url')
+    .select('id, name, current_price, target_price, url, last_updated, image_url, description')
   if (error) throw error
   return data ?? []
 }
