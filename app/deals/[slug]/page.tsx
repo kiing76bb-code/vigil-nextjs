@@ -79,30 +79,75 @@ export default async function DealPage({ params }: { params: { slug: string } })
         {/* Main grid */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', marginBottom: '48px' }}>
 
-          {/* Left — Image */}
+          {/* Left — Video or Image */}
           <div>
-            {product.image_url && (
-              <div style={{
-                background: '#f8f9fa',
-                borderRadius: '16px',
-                padding: '32px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                aspectRatio: '1',
-                border: '1px solid #eee'
-              }}>
-                <img
-                  src={product.image_url}
-                  alt={product.name}
-                  style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
+            <div style={{
+              background: '#0a0a0a',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              aspectRatio: '1',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '1px solid #1a1a1a'
+            }}>
+              {product.video_url ? (
+                <video
+                  src={product.video_url}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    borderRadius: '16px'
+                  }}
                 />
-              </div>
-            )}
+              ) : product.image_url ? (
+                <div style={{
+                  background: '#f8f9fa',
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '16px',
+                  padding: '32px'
+                }}>
+                  <img
+                    src={product.image_url}
+                    alt={product.name}
+                    style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
+                  />
+                </div>
+              ) : (
+                <div style={{ color: '#333', fontSize: '4rem' }}>📦</div>
+              )}
+            </div>
           </div>
 
           {/* Right — Details */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+            {/* Commercial badge */}
+            {product.video_url && (
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+                background: '#0a0a0a',
+                color: '#22c55e',
+                fontSize: '0.75rem',
+                fontWeight: '700',
+                padding: '4px 10px',
+                borderRadius: '999px',
+                marginBottom: '4px'
+              }}>
+                🎬 Commercial Available
+              </div>
+            )}
 
             {/* Retailer badge */}
             <div>
