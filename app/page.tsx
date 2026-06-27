@@ -23,10 +23,8 @@ export default async function LandingPage() {
           <Link href="/deals" style={{ color: '#888', textDecoration: 'none', fontSize: '0.9rem' }}>
             Live Deals
           </Link>
-          <a
-            href="https://chromewebstore.google.com/"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/deals"
             style={{
               background: '#22c55e',
               color: '#000',
@@ -37,8 +35,8 @@ export default async function LandingPage() {
               fontSize: '0.85rem'
             }}
           >
-            Add to Chrome — Free
-          </a>
+            Start Tracking Free
+          </Link>
         </div>
       </nav>
 
@@ -60,7 +58,7 @@ export default async function LandingPage() {
           marginBottom: '24px',
           letterSpacing: '0.1em'
         }}>
-          FREE CHROME EXTENSION
+          FREE PRICE TRACKER
         </div>
         <h1 style={{
           fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
@@ -83,10 +81,8 @@ export default async function LandingPage() {
           The moment one hits your target price, you&apos;re first to know.
         </p>
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <a
-            href="https://chromewebstore.google.com/"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/deals"
             style={{
               background: '#22c55e',
               color: '#000',
@@ -97,8 +93,8 @@ export default async function LandingPage() {
               fontSize: '1.1rem'
             }}
           >
-            Add to Chrome — It&apos;s Free
-          </a>
+            Start Tracking Free →
+          </Link>
           <Link href="/deals" style={{
             background: '#1a1a1a',
             color: '#fff',
@@ -113,7 +109,7 @@ export default async function LandingPage() {
           </Link>
         </div>
         <p style={{ color: '#444', fontSize: '0.8rem', marginTop: '16px' }}>
-          No account required. Works on Amazon, Walmart, Target and more.
+          Free to use. No account required.
         </p>
       </section>
 
@@ -248,10 +244,8 @@ export default async function LandingPage() {
         <p style={{ color: '#666', marginBottom: '32px', fontSize: '1.1rem' }}>
           Join thousands of shoppers who let Vigil do the watching.
         </p>
-        <a
-          href="https://chromewebstore.google.com/"
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          href="/deals"
           style={{
             background: '#22c55e',
             color: '#000',
@@ -263,8 +257,8 @@ export default async function LandingPage() {
             display: 'inline-block'
           }}
         >
-          Add to Chrome — Free
-        </a>
+          Start Tracking Free →
+        </Link>
       </section>
 
       {/* Footer */}
