@@ -73,6 +73,24 @@ export default async function DealsPage() {
               flexDirection: 'column',
               gap: '12px'
             }}>
+              {product.image_url && (
+                <div style={{
+                  width: '100%',
+                  height: '140px',
+                  background: '#f8f8f8',
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <img
+                    src={product.image_url}
+                    alt={product.name}
+                    style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', padding: '8px' }}
+                  />
+                </div>
+              )}
               <h2 style={{ fontSize: '1rem', fontWeight: '600', color: '#fff', margin: 0, lineHeight: 1.4 }}>
                 {product.name}
               </h2>

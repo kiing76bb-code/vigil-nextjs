@@ -36,6 +36,23 @@ export default async function DealPage({ params }: { params: { slug: string } })
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <h1 className="text-2xl font-bold mb-4">{product.name}</h1>
+      {product.image_url && (
+        <div style={{ margin: '16px 0' }}>
+          <img
+            src={product.image_url}
+            alt={product.name}
+            style={{
+              width: '100%',
+              maxWidth: '400px',
+              height: '300px',
+              objectFit: 'contain',
+              background: '#f8f8f8',
+              borderRadius: '12px',
+              padding: '16px'
+            }}
+          />
+        </div>
+      )}
       <div className="flex items-baseline gap-4 mb-2">
         <span className="text-3xl font-bold text-green-600">${product.current_price}</span>
         {product.target_price > product.current_price && (

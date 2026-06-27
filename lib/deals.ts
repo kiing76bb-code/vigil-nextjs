@@ -1,13 +1,23 @@
 import { supabase } from './supabase'
 
+export type Product = {
+  id: string
+  name: string
+  current_price: number
+  target_price: number
+  url: string
+  last_updated: string
+  image_url?: string
+}
+
 export function slugify(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 }
 
-export async function getAllProducts() {
+export async function getAllProducts(): Promise<Product[]> {
   const { data, error } = await supabase
     .from('products')
-    .select('id, name, current_price, target_price, url, last_updated')
+    .select('id, name, current_price, target_price, url, last_updated, image_url')
   if (error) throw error
   return data ?? []
 }

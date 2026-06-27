@@ -185,6 +185,25 @@ export default async function LandingPage() {
                   border: '1px solid #1e1e1e',
                   cursor: 'pointer'
                 }}>
+                  {product.image_url && (
+                    <div style={{
+                      width: '100%',
+                      height: '140px',
+                      background: '#f8f8f8',
+                      borderRadius: '8px',
+                      marginBottom: '12px',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <img
+                        src={product.image_url}
+                        alt={product.name}
+                        style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', padding: '8px' }}
+                      />
+                    </div>
+                  )}
                   <p style={{ color: '#fff', fontWeight: '600', fontSize: '0.95rem', marginBottom: '10px', lineHeight: 1.4 }}>
                     {product.name}
                   </p>
