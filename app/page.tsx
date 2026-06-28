@@ -113,6 +113,42 @@ export default async function LandingPage() {
         </p>
       </section>
 
+      {/* Stats bar */}
+      <section style={{
+        borderTop: '1px solid #1a1a1a',
+        borderBottom: '1px solid #1a1a1a',
+        padding: '32px 20px'
+      }}>
+        <div style={{
+          maxWidth: '700px',
+          margin: '0 auto',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+          gap: '16px',
+          textAlign: 'center'
+        }}>
+          {[
+            { value: '88+', label: 'Products Tracked' },
+            { value: 'Free', label: 'Forever' },
+            { value: 'Instant', label: 'Alerts' },
+          ].map(stat => (
+            <div key={stat.label} style={{
+              background: '#111',
+              borderRadius: '12px',
+              padding: '24px 16px',
+              border: '1px solid #1e1e1e'
+            }}>
+              <div style={{ color: '#22c55e', fontSize: 'clamp(1.6rem, 4vw, 2.2rem)', fontWeight: '900', lineHeight: 1 }}>
+                {stat.value}
+              </div>
+              <div style={{ color: '#888', fontSize: '0.85rem', marginTop: '6px', fontWeight: '500' }}>
+                {stat.label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* How It Works */}
       <section style={{
         maxWidth: '900px',

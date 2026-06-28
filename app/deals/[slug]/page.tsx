@@ -3,10 +3,28 @@ import AlertForm from '@/components/AlertForm'
 import ShareButtons from '@/components/ShareButtons'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import type { Metadata } from 'next'
 
 export async function generateStaticParams() {
   const products = await getAllProducts()
   return products.map(p => ({ slug: slugify(p.name) }))
+}
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const product = await getProductBySlug(params.slug)
+  if (!product) return { title: 'Deal Not Found — Vigil' }
+  const saved = product.target_price > 0
+    ? Math.round(((product.target_price - product.current_price) / product.target_price) * 100)
+    : 0
+  return {
+    title: `${product.name} — $${product.current_price} (${saved}% off) | Vigil`,
+    description: product.description || `Track price drops for ${product.name} on Vigil. Currently $${product.current_price}.`,
+    openGraph: {
+      title: `${product.name} just dropped to $${product.current_price}`,
+      description: `${saved}% off — set a free price alert at vigildrop.com`,
+      images: product.image_url ? [product.image_url] : [],
+    }
+  }
 }
 
 function getRetailerInfo(url: string) {
@@ -60,13 +78,45 @@ export default async function DealPage({ params }: { params: { slug: string } })
   return (
     <main style={{ background: '#fff', minHeight: '100vh', fontFamily: 'sans-serif' }}>
 
+      <style>{`
+        .deal-main-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 48px;
+          margin-bottom: 48px;
+        }
+        .deal-related-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 16px;
+        }
+        .deal-nav-crumb {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: 180px;
+        }
+        @media (max-width: 768px) {
+          .deal-main-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+          }
+          .deal-related-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+          .deal-nav-crumb {
+            display: none;
+          }
+        }
+      `}</style>
+
       {/* Nav */}
-      <nav style={{ background: '#0a0a0a', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: '900', letterSpacing: '0.2em', fontSize: '1.1rem' }}>VIGIL</Link>
-        <span style={{ color: '#444' }}>›</span>
-        <Link href="/deals" style={{ color: '#888', textDecoration: 'none', fontSize: '0.85rem' }}>Deals</Link>
-        <span style={{ color: '#444' }}>›</span>
-        <span style={{ color: '#666', fontSize: '0.85rem' }}>{product.name}</span>
+      <nav style={{ background: '#0a0a0a', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '12px', overflow: 'hidden' }}>
+        <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontWeight: '900', letterSpacing: '0.2em', fontSize: '1.1rem', flexShrink: 0 }}>VIGIL</Link>
+        <span style={{ color: '#444', flexShrink: 0 }}>›</span>
+        <Link href="/deals" style={{ color: '#888', textDecoration: 'none', fontSize: '0.85rem', flexShrink: 0 }}>Deals</Link>
+        <span style={{ color: '#444', flexShrink: 0 }}>›</span>
+        <span className="deal-nav-crumb" style={{ color: '#666', fontSize: '0.85rem' }}>{product.name}</span>
       </nav>
 
       <script
@@ -74,10 +124,10 @@ export default async function DealPage({ params }: { params: { slug: string } })
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '40px 20px' }}>
+      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 20px' }}>
 
-        {/* Main grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', marginBottom: '48px' }}>
+        {/* Main grid — responsive via CSS class */}
+        <div className="deal-main-grid">
 
           {/* Left — Video or Image */}
           <div>
@@ -98,12 +148,7 @@ export default async function DealPage({ params }: { params: { slug: string } })
                   muted
                   loop
                   playsInline
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    borderRadius: '16px'
-                  }}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '16px' }}
                 />
               ) : product.image_url ? (
                 <div style={{
@@ -114,12 +159,13 @@ export default async function DealPage({ params }: { params: { slug: string } })
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderRadius: '16px',
-                  padding: '32px'
+                  padding: '24px',
+                  boxSizing: 'border-box'
                 }}>
                   <img
                     src={product.image_url}
                     alt={product.name}
-                    style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
+                    style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                   />
                 </div>
               ) : (
@@ -143,7 +189,6 @@ export default async function DealPage({ params }: { params: { slug: string } })
                 fontWeight: '700',
                 padding: '4px 10px',
                 borderRadius: '999px',
-                marginBottom: '4px'
               }}>
                 🎬 Commercial Available
               </div>
@@ -164,17 +209,17 @@ export default async function DealPage({ params }: { params: { slug: string } })
               </span>
             </div>
 
-            <h1 style={{ fontSize: '1.6rem', fontWeight: '800', color: '#111', margin: 0, lineHeight: 1.3 }}>
+            <h1 style={{ fontSize: 'clamp(1.3rem, 3vw, 1.6rem)', fontWeight: '800', color: '#111', margin: 0, lineHeight: 1.3 }}>
               {product.name}
             </h1>
 
             {/* Price */}
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '2.5rem', fontWeight: '900', color: '#16a34a' }}>
+              <span style={{ fontSize: 'clamp(2rem, 5vw, 2.5rem)', fontWeight: '900', color: '#16a34a' }}>
                 ${product.current_price}
               </span>
               {product.target_price > product.current_price && (
-                <span style={{ color: '#999', textDecoration: 'line-through', fontSize: '1.2rem' }}>
+                <span style={{ color: '#999', textDecoration: 'line-through', fontSize: '1.1rem' }}>
                   ${product.target_price}
                 </span>
               )}
@@ -204,7 +249,7 @@ export default async function DealPage({ params }: { params: { slug: string } })
               </p>
             )}
 
-            {/* Buy button */}
+            {/* Buy button — full width on all screens */}
             <a
               href={affiliateUrl}
               target="_blank"
@@ -242,7 +287,7 @@ export default async function DealPage({ params }: { params: { slug: string } })
           <h2 style={{ fontSize: '1.3rem', fontWeight: '800', marginBottom: '20px', color: '#111' }}>
             More deals you might like
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
+          <div className="deal-related-grid">
             {related.map(p => {
               const relSaved = p.target_price > 0
                 ? Math.round(((p.target_price - p.current_price) / p.target_price) * 100)
@@ -252,22 +297,24 @@ export default async function DealPage({ params }: { params: { slug: string } })
                   <div style={{
                     border: '1px solid #eee',
                     borderRadius: '10px',
-                    padding: '16px',
+                    padding: '12px',
                     background: '#fafafa',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    height: '100%',
+                    boxSizing: 'border-box'
                   }}>
                     {p.image_url && (
                       <img
                         src={p.image_url}
                         alt={p.name}
-                        style={{ width: '100%', height: '100px', objectFit: 'contain', marginBottom: '10px' }}
+                        style={{ width: '100%', height: '80px', objectFit: 'contain', marginBottom: '8px' }}
                       />
                     )}
-                    <p style={{ color: '#111', fontSize: '0.85rem', fontWeight: '600', margin: '0 0 6px', lineHeight: 1.3 }}>
+                    <p style={{ color: '#111', fontSize: '0.8rem', fontWeight: '600', margin: '0 0 6px', lineHeight: 1.3 }}>
                       {p.name}
                     </p>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span style={{ color: '#16a34a', fontWeight: '800', fontSize: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+                      <span style={{ color: '#16a34a', fontWeight: '800', fontSize: '0.95rem' }}>
                         ${p.current_price}
                       </span>
                       {relSaved > 0 && (
